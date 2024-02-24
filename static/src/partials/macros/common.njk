@@ -1,0 +1,62 @@
+{# Menu macro #}
+{%- macro menu(props) -%}
+    {% from "macros/common.njk" import menu %}
+
+    <ul class="menu{% if props.class %} {{ props.class }}{% endif %}"{% if props.attributes %} {{ props.attributes | safe }}{% endif %}>
+
+        {% for link in props.nav %}
+
+            {% set classes = ([
+                'current-menu-item' if props.currentPage == link.url,
+                'menu-item-has-children' if link.submenu
+            ]) | toClassNames %}
+
+            <li class="menu__item{{ classes }}">
+
+                <a href="{{ root }}{{ link.url }}">{{ link.name }}</a>
+
+                {%if link.submenu %}
+
+                    {{ menu({
+                        nav: link.submenu,
+                        currentPage: props.currentPage
+                    }) }}
+
+                {% endif %}
+
+            </li>
+
+        {% endfor -%}
+
+    </ul>
+
+{%- endmacro -%}
+
+{# Modal macro #}
+{%- macro modal(props) -%}
+
+    <div class="modal{%if props.class %}{{ props.class }}{% endif %}" id="{{ props.id }}" tabindex="-1">
+
+        <div class="modal__wrapper">
+
+            <div class="modal__content">
+
+                <div class="modal__header">
+
+                    <button type="button" class="modal__close-btn" data-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+
+                <div class="modal__body">
+
+                    {% if caller %}{{ caller()  }}{% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{%- endmacro -%}
